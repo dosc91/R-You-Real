@@ -1,0 +1,166 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Basics in R | R You Real? Lexical Decisions and Data Analysis</title><style>
++:root{--blue:#006AB3;--dark:#003863;--pale:#F1F8FE;--text:#3D3D43}*{box-sizing:border-box}body{font-family:Arial,sans-serif;color:var(--text);line-height:1.65;margin:0;background:white}main{max-width:900px;margin:auto;padding:45px 35px 70px}header{border-top:7px solid var(--blue);padding-top:22px}h1,h2,h3{color:var(--dark);line-height:1.25}h1{font-size:2.5rem;margin-bottom:.5rem}h2{margin-top:2.5rem;font-size:1.55rem}a{color:var(--blue)}.subtitle{font-size:1.2rem;color:var(--blue)}.meta{font-size:.9rem}nav{margin:30px 0;padding:18px 24px;background:var(--pale)}nav ol{columns:2;column-gap:35px}nav li{break-inside:avoid;margin-bottom:6px}pre{background:#f5f7f9;border:1px solid #dadada;border-radius:5px;padding:16px;overflow-x:auto;line-height:1.5;font-size:.92rem}code{font-family:Consolas,monospace}p code,li code{color:var(--dark);background:var(--pale);padding:1px 4px}.level{font-size:.8rem;color:var(--blue);font-weight:bold;text-transform:uppercase;letter-spacing:.06em}details{border-left:3px solid var(--blue);padding:8px 18px;margin:22px 0 35px;background:var(--pale)}summary{color:var(--dark);font-weight:bold;cursor:pointer}li{margin-bottom:8px}.callout-note{border-left:3px solid var(--blue)}.callout-tip{border-left-color:var(--dark)}footer{border-top:1px solid #dadada;margin-top:40px;padding-top:16px;font-size:.85rem}@media(max-width:650px){main{padding:25px 20px}nav ol{columns:1}h1{font-size:2rem}}@media print{nav{display:none}main{max-width:none;padding:0}details{background:white}h2,summary{break-after:avoid}pre{white-space:pre-wrap}a{color:inherit}}
++
+
+/* Stronger HHU highlights and exercise separation */
+h1, h2, h3 { color: #006AB3 !important; }
+header { border-top: 8px solid #006AB3; }
+section[id^="task"] {
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 4px solid #006AB3;
+}
+section[id^="task"] > h2 {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.2rem;
+  background: #006AB3;
+  color: #FFFFFF !important;
+  border-radius: 4px;
+}
+section[id^="task"] details {
+  margin: 1.75rem 0 0;
+  padding: 0;
+  border: 1px solid #B7D8EE;
+  border-left: 5px solid #006AB3;
+  border-radius: 4px;
+  background: #F1F8FE;
+}
+section[id^="task"] details > summary {
+  padding: .85rem 1.1rem;
+  color: #006AB3;
+  background: #E1F0FA;
+}
+section[id^="task"] details > :not(summary) {
+  margin-left: 1.1rem;
+  margin-right: 1.1rem;
+}
+section[id^="task"] details > :last-child { margin-bottom: 1.1rem; }
+section.level1 {
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 4px solid #006AB3;
+}
+section.level1 > h1 {
+  padding: 1rem 1.2rem;
+  background: #006AB3;
+  color: #FFFFFF !important;
+  border-radius: 4px;
+}
+.callout.callout-note {
+  border-left: 5px solid #006AB3 !important;
+  margin-bottom: 1.75rem;
+}
+.callout.callout-note > .callout-header {
+  background: #E1F0FA !important;
+  color: #003863 !important;
+}
+.callout.callout-tip {
+  border-left: 5px solid #006AB3 !important;
+  background: #F1F8FE;
+  margin-bottom: 2.5rem;
+}
+.callout.callout-tip > .callout-header {
+  background: #E1F0FA !important;
+  color: #006AB3 !important;
+}
+@media print {
+  section[id^="task"], section.level1 { margin-top: 2rem; }
+  section[id^="task"] > h2, section.level1 > h1 {
+    background: #E1F0FA;
+    color: #006AB3 !important;
+  }
+}
+</style></head><body><main><header><p class="meta">Dr. Dominic Schmitz · Exercises</p><h1>Basics in R</h1><p class="subtitle">R You Real? Lexical Decisions and Data Analysis</p></header><p>These exercises practise the basics from our introduction: creating objects and vectors, using functions, and working with a data frame. You will use the same CSV as in class. You do not need statistical models or new packages for data manipulation yet.</p>
+<p>Work through the exercises in order in your own R script. Add exercise numbers as comments. Try each exercise yourself before opening its solution. The bonus exercise is optional.</p>
+<h2>Preparation</h2>
+<p>Keep your exercise script and <code>s_data_workshop.csv</code> in the same folder. Open that folder as an RStudio project, or save your script and choose Session → Set Working Directory → To Source File Location in RStudio. Keeping a script in the same folder alone does not set the working directory.</p>
+<p>Load the data together with your instructor. If <code>data_s</code> is already available, you do not need to import it again.</p>
+<pre><code>data_s &lt;- read.csv(&quot;s_data_workshop.csv&quot;)
+head(data_s)</code></pre>
+<p>Use the name <code>data_s</code> throughout. If R cannot find the file, check the filename and working directory. Use Ctrl + Enter to run the current line or selected code; on a Mac, use Cmd + Enter.</p><nav aria-label="Exercise overview"><strong>Exercise overview</strong><ol><li><a href="#task1">Recognising valid names</a></li><li><a href="#task2">Predicting and running code</a></li><li><a href="#task3">Creating and selecting vectors</a></li><li><a href="#task4">Using functions</a></li><li><a href="#task5">Getting to know our dataset</a></li><li><a href="#task6">Selecting rows and summarising values</a></li><li><a href="#task7">Installing a package</a></li><li><a href="#task8">Rounding a mean</a></li><li><a href="#task9">Converting character columns to factors</a></li><li><a href="#task10">Renaming and counting factor levels</a></li><li><a href="#task11">Renaming a column</a></li><li><a href="#task12">Saving and reusing data</a></li></ol></nav><section id="task1"><h2>Exercise 1 · Recognising valid names</h2><p>Which names can you use directly as object names in R? Decide without running code first. Then correct the invalid names.</p>
+<pre><code>weight1
+2c_length
+data.new
+_new.data.1b
+1b.da
+ta.experiment
+new_data_6
+last_trial.c
+data.as.formated.by.jack.the.other.day
+d1
+.new_data
+.2data</code></pre>
+<p>Hint: Names can start with a letter or a period. A period at the beginning must not be followed by a digit. R distinguishes uppercase and lowercase letters.</p><details><summary>Solution to Exercise 1</summary><p>The valid names are <code>weight1</code>, <code>data.new</code>, <code>ta.experiment</code>, <code>new_data_6</code>, <code>last_trial.c</code>, <code>data.as.formated.by.jack.the.other.day</code>, <code>d1</code>, and <code>.new_data</code>.</p>
+<p>The invalid names are <code>2c_length</code>, <code>_new.data.1b</code>, <code>1b.da</code>, and <code>.2data</code>. Possible alternatives are <code>c_length2</code>, <code>new.data.1b</code>, <code>b1.da</code>, and <code>data2</code>.</p>
+<p>Reserved words such as <code>if</code> and <code>TRUE</code> also cannot be used as ordinary object names. Short, descriptive names make code easier to read.</p></details></section><section id="task2"><h2>Exercise 2 · Predicting and running code</h2><ol><li>Predict the result of the last line. Then run the code.</li></ol>
+<pre><code>var_a &lt;- 6 * 30
+var_b &lt;- 9
+var_a + var_b</code></pre>
+<ol><li>Change <code>var_a</code> to 10. Calculate the sum again. Which object was overwritten?</li><li>Add a comment to your script. Comment out a calculation and check whether it runs.</li></ol><details><summary>Solution to Exercise 2</summary><p>The first sum is 189. Assignments store values; they normally do not display them directly.</p>
+<pre><code>var_a &lt;- 10
+var_a + var_b
+# This sum is 19.
+# 1 + 1</code></pre>
+<p><code>var_a</code> was overwritten. Text following <code>#</code> on the same line is not executed as code.</p></details></section><section id="task3"><h2>Exercise 3 · Creating and selecting vectors</h2><ol><li>Create a factor called <code>colours</code> containing six colour names of your choice.</li><li>Use <code>:</code> and square brackets to display the third, fourth, and fifth entries.</li><li>Create a numeric vector called <code>numbers</code> containing 3, 6, and 9.</li><li>Find its length. Then add 1 to each element.</li></ol><details><summary>Solution to Exercise 3</summary><p>One possible solution:</p>
+<pre><code>colours &lt;- as.factor(c(&quot;red&quot;, &quot;blue&quot;, &quot;green&quot;, &quot;yellow&quot;, &quot;black&quot;, &quot;white&quot;))
+colours[3:5]
+numbers &lt;- c(3, 6, 9)
+length(numbers)
+numbers + 1</code></pre>
+<p>The length is 3. Adding 1 gives 4, 7, and 10. <code>colours[3:5]</code> selects entries. The factor levels also shown in the output describe the possible categories.</p></details></section><section id="task4"><h2>Exercise 4 · Using functions</h2><ol><li>Repeat the entire vector <code>numbers</code> from Exercise 3 five times. Store the result as <code>numbers_repeated</code>.</li><li>Calculate its sum and its length.</li><li>Explain the difference between a function name and an argument using <code>sum(numbers_repeated)</code> as an example.</li></ol><details><summary>Solution to Exercise 4</summary><pre><code>numbers_repeated &lt;- rep(numbers, 5)
+sum(numbers_repeated)
+length(numbers_repeated)</code></pre>
+<p>The sum is 90 and the length is 15. <code>sum</code> is the function name; <code>numbers_repeated</code> is the argument supplied to it.</p></details></section><section id="task5"><h2>Exercise 5 · Getting to know our dataset</h2><p>Use the data frame <code>data_s</code> that we loaded together in class.</p>
+<ol><li>Display its first few rows, a summary, and its structure.</li><li>Display all column names.</li><li>Choose three columns. What might they describe? What are their data types?</li><li>How many entries do <code>speaker</code> and <code>item</code> contain? Does this also tell you the number of different speakers and words?</li></ol>
+<p>Hint: Use <code>$</code> to access a column. Also note any column names whose meanings you cannot confidently work out.</p><details><summary>Solution to Exercise 5</summary><pre><code>head(data_s)
+summary(data_s)
+str(data_s)
+names(data_s)
+length(data_s$speaker)
+length(data_s$item)</code></pre>
+<p>Both columns have 150 entries in the supplied CSV. This is the number of rows, not the number of different speakers or words.</p>
+<p><code>sDur</code> contains /s/ duration, <code>age</code> contains age, and <code>typeOfS</code> contains the /s/ category. <code>speaker</code> identifies participants: although stored as numbers, these identifiers are not measurements like age. A data type alone does not explain a variable&#x27;s meaning.</p></details></section><section id="task6"><h2>Exercise 6 · Selecting rows and summarising values</h2><ol><li>Create <code>data_nm</code>, containing only rows where <code>typeOfS == &quot;nm&quot;</code>.</li><li>Use <code>summary()</code> to check your selection.</li><li>Calculate the mean of <code>sDur</code> in <code>data_nm</code>.</li><li>Use R&#x27;s help or a search engine to find the function for the standard deviation. Calculate the standard deviation of <code>sDur</code> in <code>data_nm</code>.</li></ol>
+<p>Hint: Use <code>subset()</code> as in our example with <code>&quot;pl&quot;</code>.</p><details><summary>Solution to Exercise 6</summary><pre><code>data_nm &lt;- subset(data_s, typeOfS == &quot;nm&quot;)
+summary(data_nm)
+mean(data_nm$sDur)
+sd(data_nm$sDur)</code></pre>
+<p><code>sd()</code> calculates the sample standard deviation. Use <code>?sd</code> for help. If another dataset contains missing values, these functions may return <code>NA</code> without further arguments. Adding <code>na.rm = TRUE</code> excludes missing values from the calculation.</p></details></section><section id="task7"><h2>Exercise 7 · Installing a package</h2><ol><li>Install <code>ggplot2</code>.</li><li>Load the package using <code>library()</code>.</li><li>Explain the difference between these two steps.</li></ol>
+<p>You do not need to create a plot with <code>ggplot2</code> for these exercises. Installation requires an internet connection.</p><details><summary>Solution to Exercise 7</summary><pre><code>install.packages(&quot;ggplot2&quot;)
+library(ggplot2)</code></pre>
+<p>Installation adds the package to a package library on your computer. <code>library()</code> loads it for the current R session. You normally do not need to reinstall it each time you start R, but you do need to load it again in a new session.</p></details></section><section id="task8"><h2>Exercise 8 · Rounding a mean</h2><ol><li>Calculate the mean of the <code>age</code> column in <code>data_s</code>.</li><li>Round the result to two decimal places.</li><li>Explain why this initially gives a mean across data rows. What happens if one participant occurs more than once?</li></ol>
+<p>Hint: You can store the mean in an object first and pass that object to <code>round()</code>.</p><details><summary>Solution to Exercise 8</summary><pre><code>mean_age &lt;- mean(data_s$age)
+round(mean_age, 2)</code></pre>
+<p>The result for the supplied CSV is 29.11. Participants with more rows contribute more often to this mean. It therefore does not automatically give the mean age of the different participants. Calculating a mean using one row per participant is beyond this exercise.</p></details></section><section id="task9"><h2>Exercise 9 · Converting character columns to factors</h2><ol><li>Create a working copy: <code>data_s_edit &lt;- data_s</code>.</li><li>Use <code>str(data_s_edit)</code> to find all columns of type <code>chr</code>.</li><li>Convert these columns to factors individually using <code>as.factor()</code>. Start with <code>typeOfS</code>.</li><li>Check your changes with <code>str()</code> and display the levels of <code>typeOfS</code>.</li></ol>
+<p>Use individual assignments here. You do not need a loop.</p><details><summary>Solution to Exercise 9</summary><p>After a fresh import of the supplied CSV with <code>read.csv()</code>, these are the character columns:</p>
+<pre><code>data_s_edit &lt;- data_s
+data_s_edit$item &lt;- as.factor(data_s_edit$item)
+data_s_edit$bsex &lt;- as.factor(data_s_edit$bsex)
+data_s_edit$list &lt;- as.factor(data_s_edit$list)
+data_s_edit$typeOfS &lt;- as.factor(data_s_edit$typeOfS)
+data_s_edit$folSeg &lt;- as.factor(data_s_edit$folSeg)
+data_s_edit$transcription &lt;- as.factor(data_s_edit$transcription)
+data_s_edit$biphoneProbSumBin &lt;- as.factor(data_s_edit$biphoneProbSumBin)
+data_s_edit$location &lt;- as.factor(data_s_edit$location)
+data_s_edit$monoMultilingual &lt;- as.factor(data_s_edit$monoMultilingual)
+data_s_edit$pauseBin &lt;- as.factor(data_s_edit$pauseBin)
+data_s_edit$folType &lt;- as.factor(data_s_edit$folType)
+data_s_edit$preC &lt;- as.factor(data_s_edit$preC)
+str(data_s_edit)
+levels(data_s_edit$typeOfS)</code></pre>
+<p>The levels of <code>typeOfS</code> are <code>&quot;is&quot;</code>, <code>&quot;nm&quot;</code>, and <code>&quot;pl&quot;</code>. Always check your actual <code>str()</code> output. Converting every character column is a technical exercise here; for example, a transcription does not need to be a factor for every analysis.</p></details></section><section id="task10"><h2>Exercise 10 · Renaming and counting factor levels</h2><p>Use <code>data_s_edit</code> from Exercise 9.</p>
+<ol><li>Display the current levels of <code>pauseBin</code>.</li><li>Replace <code>&quot;pause&quot;</code> with <code>&quot;yes&quot;</code> and <code>&quot;no_pause&quot;</code> with <code>&quot;no&quot;</code>.</li><li>Use <code>table()</code> to count the observations in each category.</li><li>How many data rows contain a pause? Why should you check the mapping between the old and new labels?</li></ol>
+<p>Hint: Use the pattern <code>levels(x)[levels(x) == &quot;old_label&quot;] &lt;- &quot;new_label&quot;</code>.</p><details><summary>Solution to Exercise 10</summary><pre><code>levels(data_s_edit$pauseBin)
+levels(data_s_edit$pauseBin)[levels(data_s_edit$pauseBin) == &quot;pause&quot;] &lt;- &quot;yes&quot;
+levels(data_s_edit$pauseBin)[levels(data_s_edit$pauseBin) == &quot;no_pause&quot;] &lt;- &quot;no&quot;
+table(data_s_edit$pauseBin)</code></pre>
+<p>The supplied CSV contains 59 rows with a pause (<code>yes</code>) and 91 without a pause (<code>no</code>). Replacing labels by position without checking could reverse their meanings. Selecting the original labels makes the mapping explicit.</p></details></section><section id="task11"><h2>Exercise 11 · Renaming a column</h2><ol><li>In <code>data_s_edit</code>, rename the column <code>item</code> to <code>word</code>.</li><li>Check the column names and display the first few entries of the renamed column.</li><li>Explain what you need to change in later code that still uses <code>data_s_edit$item</code>.</li></ol>
+<p>The original data in <code>data_s</code> remain available.</p><details><summary>Solution to Exercise 11</summary><pre><code>names(data_s_edit)[names(data_s_edit) == &quot;item&quot;] &lt;- &quot;word&quot;
+names(data_s_edit)
+head(data_s_edit$word)</code></pre>
+<p>Later code must use the new column name, <code>word</code>. Renaming the column does not change its values.</p></details></section><section id="task12"><h2>Bonus exercise · Saving and reusing data</h2><ol><li>Save <code>data_nm</code> as <code>only_nm_s_data.csv</code> in your course folder.</li><li>Read this file into a new object called <code>data_nm_check</code> and inspect its first few rows.</li><li>Also save <code>data_nm</code> as an R data file and load it again.</li></ol>
+<p>Hint: <code>write.csv(..., row.names = FALSE)</code> prevents an extra column of row numbers. For <code>save()</code>, specify the filename using <code>file =</code>.</p><details><summary>Solution to Bonus exercise</summary><pre><code>write.csv(data_nm, &quot;only_nm_s_data.csv&quot;, row.names = FALSE)
+data_nm_check &lt;- read.csv(&quot;only_nm_s_data.csv&quot;)
+head(data_nm_check)
+save(data_nm, file = &quot;data_nm.RData&quot;)
+load(&quot;data_nm.RData&quot;)</code></pre>
+<p>CSV stores a table as text. An R data file preserves the R object, including its data types. <code>load()</code> restores objects under their saved names and can overwrite existing objects with those names.</p></details></section><h2>To finish</h2><p>Finally, run your script from top to bottom. Can you explain what each line does? Write down one question you would still like to discuss in class.</p><footer>R You Real? Lexical Decisions and Data Analysis · Basics in R</footer></main></body></html>
