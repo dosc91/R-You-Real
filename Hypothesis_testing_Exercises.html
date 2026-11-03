@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Hypothesis Testing | R You Real?</title><style>
+:root{--blue:#006AB3;--dark:#003863;--pale:#F1F8FE;--text:#3D3D43}*{box-sizing:border-box}body{font-family:Arial,sans-serif;color:var(--text);line-height:1.65;margin:0;background:white}main{max-width:900px;margin:auto;padding:45px 35px 70px}header{border-top:7px solid var(--blue);padding-top:22px}h1,h2,h3{color:var(--dark);line-height:1.25}h1{font-size:2.5rem;margin-bottom:.5rem}h2{margin-top:2.5rem;font-size:1.55rem}a{color:var(--blue)}.subtitle{font-size:1.2rem;color:var(--blue)}.meta{font-size:.9rem}nav{margin:30px 0;padding:18px 24px;background:var(--pale)}nav ol{columns:2;column-gap:35px}nav li{break-inside:avoid;margin-bottom:6px}pre{background:#f5f7f9;border:1px solid #dadada;border-radius:5px;padding:16px;overflow-x:auto;line-height:1.5;font-size:.92rem}code{font-family:Consolas,monospace}p code,li code{color:var(--dark);background:var(--pale);padding:1px 4px}.level{font-size:.8rem;color:var(--blue);font-weight:bold;text-transform:uppercase;letter-spacing:.06em}details{border-left:3px solid var(--blue);padding:8px 18px;margin:22px 0 35px;background:var(--pale)}summary{color:var(--dark);font-weight:bold;cursor:pointer}li{margin-bottom:8px}.callout-note{border-left:3px solid var(--blue)}.callout-tip{border-left-color:var(--dark)}footer{border-top:1px solid #dadada;margin-top:40px;padding-top:16px;font-size:.85rem}@media(max-width:650px){main{padding:25px 20px}nav ol{columns:1}h1{font-size:2rem}}@media print{nav{display:none}main{max-width:none;padding:0}details{background:white}h2,summary{break-after:avoid}pre{white-space:pre-wrap}a{color:inherit}}
+
+
+/* Stronger HHU highlights and exercise separation */
+h1, h2, h3 { color: #006AB3 !important; }
+header { border-top: 8px solid #006AB3; }
+section[id^="task"] {
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 4px solid #006AB3;
+}
+section[id^="task"] > h2 {
+  margin: 0 0 1.5rem;
+  padding: 1rem 1.2rem;
+  background: #006AB3;
+  color: #FFFFFF !important;
+  border-radius: 4px;
+}
+section[id^="task"] details {
+  margin: 1.75rem 0 0;
+  padding: 0;
+  border: 1px solid #B7D8EE;
+  border-left: 5px solid #006AB3;
+  border-radius: 4px;
+  background: #F1F8FE;
+}
+section[id^="task"] details > summary {
+  padding: .85rem 1.1rem;
+  color: #006AB3;
+  background: #E1F0FA;
+}
+section[id^="task"] details > :not(summary) {
+  margin-left: 1.1rem;
+  margin-right: 1.1rem;
+}
+section[id^="task"] details > :last-child { margin-bottom: 1.1rem; }
+section.level1 {
+  margin-top: 3.5rem;
+  padding-top: 1.25rem;
+  border-top: 4px solid #006AB3;
+}
+section.level1 > h1 {
+  padding: 1rem 1.2rem;
+  background: #006AB3;
+  color: #FFFFFF !important;
+  border-radius: 4px;
+}
+.callout.callout-note {
+  border-left: 5px solid #006AB3 !important;
+  margin-bottom: 1.75rem;
+}
+.callout.callout-note > .callout-header {
+  background: #E1F0FA !important;
+  color: #003863 !important;
+}
+.callout.callout-tip {
+  border-left: 5px solid #006AB3 !important;
+  background: #F1F8FE;
+  margin-bottom: 2.5rem;
+}
+.callout.callout-tip > .callout-header {
+  background: #E1F0FA !important;
+  color: #006AB3 !important;
+}
+@media print {
+  section[id^="task"], section.level1 { margin-top: 2rem; }
+  section[id^="task"] > h2, section.level1 > h1 {
+    background: #E1F0FA;
+    color: #006AB3 !important;
+  }
+}
+
+/* Worksheet tables and readable output */
+table{border-collapse:collapse;width:100%;margin:1.1rem 0;font-size:.95rem}th,td{padding:.55rem .7rem;border-bottom:1px solid #cbdce8;text-align:left;vertical-align:top}th{background:#e1f0fa;color:#003863}thead{display:table-header-group}summary:focus-visible,a:focus-visible{outline:3px solid #006AB3;outline-offset:3px}code{overflow-wrap:anywhere}pre code{overflow-wrap:normal}details ol{padding-left:1.5rem}details pre{background:#fff}section[id^="task"] h2{font-size:1.4rem}#to-finish{margin-top:2.5rem}@media(max-width:650px){table{font-size:.85rem}th,td{padding:.4rem}.subtitle{font-size:1.05rem}}
+</style></head><body><main><header><p class="meta">Dr. Dominic Schmitz · Exercises</p><h1>Hypothesis Testing</h1><p class="subtitle">R You Real? Lexical Decisions and Data Analysis</p></header><p>These exercises use <strong>fictional LDT data</strong>, created for practice. Each row is one trial. The results describe this dataset.</p>
+<p>Work in your own R script. Add exercise numbers as comments. Try each task before opening its solution. Exercises 4 and 7 are optional extra practice if time is short.</p>
+<h2>Preparation</h2>
+<p>Save your script and <code>fictional_ldt.RData</code> in the same folder. In RStudio, save the script, then choose <strong>Session → Set Working Directory → To Source File Location</strong>.</p>
+<p>Load the data:</p>
+<pre><code class="language-r">load(&quot;fictional_ldt.RData&quot;)
+</code></pre>
+<p>This loads a data frame called <code>data_ldt</code>. Use this name throughout the exercises.</p>
+<p>No packages are needed. Use <strong>0.05</strong> as the significance level for all tests in this worksheet.</p>
+<h2>The columns</h2>
+<table>
+<thead>
+<tr>
+<th>Column</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>participant_id</code></td>
+<td>Fictional participant ID</td>
+</tr>
+<tr>
+<td><code>stimulus_id</code></td>
+<td>Stimulus ID</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td><code>word</code> or <code>nonword</code></td>
+</tr>
+<tr>
+<td><code>case</code></td>
+<td>Presented in <code>lowercase</code> or <code>uppercase</code></td>
+</tr>
+<tr>
+<td><code>rt_ms</code></td>
+<td>Reaction time in milliseconds; a smaller value means a faster response</td>
+</tr>
+<tr>
+<td><code>correct</code></td>
+<td><code>1</code> = correct response; <code>0</code> = incorrect response</td>
+</tr>
+</tbody></table>
+<p>There are no missing values. Reaction times are recorded for correct and incorrect responses.</p>
+<nav aria-label="Exercise overview"><strong>Exercise overview</strong><ol><li><a href="#task1">Load and inspect the data</a></li><li><a href="#task2">Prepare and compare reaction times</a></li><li><a href="#task3">First t-test: words and nonwords</a></li><li><a href="#task4">Another t-test: lowercase and uppercase words</a></li><li><a href="#task5">Count correct and incorrect responses</a></li><li><a href="#task6">First chi-square test: accuracy for words and nonwords</a></li><li><a href="#task7">Another chi-square test: accuracy for lowercase and uppercase words</a></li><li><a href="#task8">What can we conclude?</a></li></ol></nav><section id="task1"><h2>Exercise 1 · Load and inspect the data</h2><ol>
+<li>Display the first few rows, the structure, and the column names.</li>
+<li>How many trials are there?</li>
+<li>How many word and nonword trials are there?</li>
+<li>How many responses are correct? How many are incorrect?</li>
+</ol>
+<p><strong>Hint:</strong> Use <code>head()</code>, <code>str()</code>, <code>names()</code>, <code>nrow()</code>, and <code>table()</code>.</p>
+<details><summary>Solution to Exercise 1</summary><pre><code class="language-r">head(data_ldt)
+str(data_ldt)
+names(data_ldt)
+nrow(data_ldt)
+table(data_ldt$type)
+table(data_ldt$correct)
+</code></pre>
+<p>There are <strong>600 trials</strong>: 300 words and 300 nonwords. There are <strong>528 correct</strong> and <strong>72 incorrect</strong> responses. Remember: <code>correct == 1</code> means correct.</p>
+</details></section>
+<section id="task2"><h2>Exercise 2 · Prepare and compare reaction times</h2><p>For the reaction-time analyses, use <strong>correct responses only</strong>.</p>
+<ol>
+<li>Create <code>correct_ldt</code>, containing only rows where <code>correct == 1</code>. Check its number of rows.</li>
+<li>From <code>correct_ldt</code>, create <code>words_rt</code> and <code>nonwords_rt</code>.</li>
+<li>Calculate the mean reaction time in each group. Which group is faster?</li>
+</ol>
+<p><strong>Start here:</strong></p>
+<pre><code class="language-r">correct_ldt &lt;- subset(data_ldt, correct == 1)
+</code></pre>
+<p><strong>Hint:</strong> Use <code>subset()</code> again to select each type. Use <code>mean()</code> and <code>$rt_ms</code> to calculate each mean.</p>
+<details><summary>Solution to Exercise 2</summary><pre><code class="language-r">correct_ldt &lt;- subset(data_ldt, correct == 1)
+nrow(correct_ldt)
+words_rt &lt;- subset(correct_ldt, type == &quot;word&quot;)
+nonwords_rt &lt;- subset(correct_ldt, type == &quot;nonword&quot;)
+mean(words_rt$rt_ms)
+mean(nonwords_rt$rt_ms)
+</code></pre>
+<p><code>correct_ldt</code> has <strong>528 rows</strong>. The mean is <strong>653.7 ms for words</strong> and <strong>722.8 ms for nonwords</strong>. Words are about <strong>69.1 ms faster</strong> in this sample.</p>
+</details></section>
+<section id="task3"><h2>Exercise 3 · First t-test: words and nonwords</h2><p><strong>Question:</strong> Do words and nonwords differ in mean reaction time?</p>
+<ol>
+<li>Complete: <strong>H₀:</strong> The mean reaction time for words is ______ the mean for nonwords. <strong>H₁:</strong> The two means ______.</li>
+<li>Run the code below. It compares both directions: either group could be faster.</li>
+<li>Find the two group means and the <code>p-value</code> in the output.</li>
+<li>Is the p-value below 0.05? What can you conclude?</li>
+</ol>
+<pre><code class="language-r">t_type &lt;- t.test(rt_ms ~ type, data = correct_ldt)
+t_type
+</code></pre>
+<p>In <code>rt_ms ~ type</code>, the left side gives the measurements and the right side gives the groups. <code>data = correct_ldt</code> tells R which dataset to use.</p>
+<details><summary>Solution to Exercise 3</summary><pre><code class="language-r">t_type &lt;- t.test(rt_ms ~ type, data = correct_ldt)
+t_type
+</code></pre>
+<p><strong>H₀:</strong> The two population means are equal. <strong>H₁:</strong> They differ.</p>
+<p>R runs a <strong>Welch two-sample t-test</strong>. It reports <strong>t ≈ 5.62</strong>, <strong>df ≈ 481.60</strong>, and <strong>p ≈ 3.287e-08</strong>. This p-value is <strong>below .001</strong>, and therefore below .05. The notation <code>e-08</code> means “multiply by 10⁻⁸”; the value is very small, not zero.</p>
+<p>We reject H₀. There is evidence of a difference in mean reaction time. In these fictional data, <strong>words received faster correct responses than nonwords</strong>.</p>
+<p>The output lists nonwords first. Read the group labels to identify each mean.</p>
+</details></section>
+<section id="task4"><h2>Exercise 4 · Another t-test: lowercase and uppercase words</h2><p><em>Optional extra practice.</em></p>
+<p><strong>Question:</strong> Do lowercase and uppercase words differ in mean reaction time?</p>
+<ol>
+<li>Use <code>words_rt</code> from Exercise 2. Does it include incorrect responses or nonwords?</li>
+<li>Create subsets for lowercase and uppercase words. Calculate their mean reaction times.</li>
+<li>State H₀. Adapt the t-test from Exercise 3: change the grouping column to <code>case</code> and the dataset to <code>words_rt</code>. Save the result as <code>t_case</code> and display it.</li>
+<li>Is the result significant at .05? Does it establish that the two population means are identical?</li>
+</ol>
+<details><summary>Solution to Exercise 4</summary><pre><code class="language-r">lowercase_rt &lt;- subset(words_rt, case == &quot;lowercase&quot;)
+uppercase_rt &lt;- subset(words_rt, case == &quot;uppercase&quot;)
+mean(lowercase_rt$rt_ms)
+mean(uppercase_rt$rt_ms)
+t_case &lt;- t.test(rt_ms ~ case, data = words_rt)
+t_case
+</code></pre>
+<p><code>words_rt</code> contains <strong>correct word responses only</strong>.</p>
+<p><strong>H₀:</strong> The population mean reaction time is the same for lowercase and uppercase words.</p>
+<p>The means are <strong>644.9 ms</strong> for lowercase and <strong>662.8 ms</strong> for uppercase. R reports <strong>t ≈ −1.18</strong>, <strong>df ≈ 276.76</strong>, and <strong>p ≈ .238</strong>.</p>
+<p>The p-value is above .05, so we <strong>do not reject H₀</strong>. The sample means differ, but the test does not provide sufficient evidence of a population difference. It does <strong>not</strong> establish that the population means are identical.</p>
+</details></section>
+<section id="task5"><h2>Exercise 5 · Count correct and incorrect responses</h2><p>Now study <strong>accuracy</strong>. Return to <code>data_ldt</code>, which includes correct <strong>and</strong> incorrect responses.</p>
+<ol>
+<li>Run the code below. What do the rows represent? What do columns <code>0</code> and <code>1</code> mean?</li>
+<li>How many correct and incorrect responses are there for each type?</li>
+<li>Calculate the percentage correct for words and for nonwords: <strong>correct responses / all responses × 100</strong>.</li>
+<li>Why would <code>correct_ldt</code> be the wrong dataset for this task?</li>
+</ol>
+<pre><code class="language-r">accuracy_type &lt;- table(data_ldt$type, data_ldt$correct)
+accuracy_type
+</code></pre>
+<details><summary>Solution to Exercise 5</summary><pre><code class="language-r">accuracy_type &lt;- table(data_ldt$type, data_ldt$correct)
+accuracy_type
+279 / 300 * 100
+249 / 300 * 100
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Type</th>
+<th align="right">Incorrect (0)</th>
+<th align="right">Correct (1)</th>
+<th align="right">Total</th>
+<th align="right">Correct (%)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>nonword</td>
+<td align="right">51</td>
+<td align="right">249</td>
+<td align="right">300</td>
+<td align="right">83</td>
+</tr>
+<tr>
+<td>word</td>
+<td align="right">21</td>
+<td align="right">279</td>
+<td align="right">300</td>
+<td align="right">93</td>
+</tr>
+</tbody></table>
+<p>Rows represent stimulus types. Columns count incorrect and correct responses. Word accuracy is <strong>10 percentage points higher</strong>.</p>
+<p><code>correct_ldt</code> has already removed every incorrect response. Using it would make both groups appear 100% correct.</p>
+</details></section>
+<section id="task6"><h2>Exercise 6 · First chi-square test: accuracy for words and nonwords</h2><p><strong>Question:</strong> Does the proportion of correct responses differ between words and nonwords?</p>
+<ol>
+<li>State H₀ in one sentence.</li>
+<li>Run the test below using the <strong>counts</strong> from Exercise 5. Keep <code>correct = FALSE</code> to use the same version as in class.</li>
+<li>Find the p-value. Is it below .05?</li>
+<li>Use the test result and the percentages from Exercise 5 to describe the finding.</li>
+<li>Run <code>chi_type$expected</code>. What counts would we expect if both groups had the same accuracy?</li>
+</ol>
+<pre><code class="language-r">chi_type &lt;- chisq.test(accuracy_type, correct = FALSE)
+chi_type
+</code></pre>
+<details><summary>Solution to Exercise 6</summary><pre><code class="language-r">chi_type &lt;- chisq.test(accuracy_type, correct = FALSE)
+chi_type
+chi_type$expected
+</code></pre>
+<p><strong>H₀:</strong> The population proportion of correct responses is the same for words and nonwords.</p>
+<p>R reports <strong>χ² ≈ 14.20</strong>, <strong>df = 1</strong>, and <strong>p ≈ .000164</strong>. This is below .05, so we reject H₀.</p>
+<p>There is evidence that accuracy differs between words and nonwords. In these fictional data, accuracy is <strong>higher for words: 93% versus 83%</strong>.</p>
+<p>Under H₀, the expected counts are <strong>36 incorrect and 264 correct responses in each group</strong>. The observed counts differ from those expected counts.</p>
+</details></section>
+<section id="task7"><h2>Exercise 7 · Another chi-square test: accuracy for lowercase and uppercase words</h2><p><em>Optional extra practice.</em></p>
+<ol>
+<li>Create <code>words_all</code> from <code>data_ldt</code>: keep word trials, including incorrect responses.</li>
+<li>Adapt Exercise 5 to create <code>accuracy_case</code>, a table of <code>case</code> and <code>correct</code> in <code>words_all</code>.</li>
+<li>Calculate the percentage correct for each case.</li>
+<li>State H₀. Adapt Exercise 6 to test <code>accuracy_case</code>; save the result as <code>chi_case</code> and display it.</li>
+<li>Interpret the p-value. Does this result prove that letter case has no effect on accuracy?</li>
+</ol>
+<details><summary>Solution to Exercise 7</summary><pre><code class="language-r">words_all &lt;- subset(data_ldt, type == &quot;word&quot;)
+accuracy_case &lt;- table(words_all$case, words_all$correct)
+accuracy_case
+141 / 150 * 100
+138 / 150 * 100
+chi_case &lt;- chisq.test(accuracy_case, correct = FALSE)
+chi_case
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Case</th>
+<th align="right">Incorrect (0)</th>
+<th align="right">Correct (1)</th>
+<th align="right">Total</th>
+<th align="right">Correct (%)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>lowercase</td>
+<td align="right">9</td>
+<td align="right">141</td>
+<td align="right">150</td>
+<td align="right">94</td>
+</tr>
+<tr>
+<td>uppercase</td>
+<td align="right">12</td>
+<td align="right">138</td>
+<td align="right">150</td>
+<td align="right">92</td>
+</tr>
+</tbody></table>
+<p><strong>H₀:</strong> The population proportion of correct responses is the same for lowercase and uppercase words.</p>
+<p>R reports <strong>χ² ≈ 0.46</strong>, <strong>df = 1</strong>, and <strong>p ≈ .497</strong>. This is above .05, so we do not reject H₀.</p>
+<p>The observed percentages differ by 2 percentage points. The test does not provide sufficient evidence of a population difference. It does <strong>not</strong> prove that letter case has no effect.</p>
+</details></section>
+<section id="task8"><h2>Exercise 8 · What can we conclude?</h2><ol>
+<li>Which test did we use for <strong>reaction times</strong>? Which did we use for <strong>counts of correct and incorrect responses</strong>?</li>
+<li>Complete this sentence: “A p-value asks how likely a result at least as extreme as ours would be, assuming ______.”</li>
+<li>Correct these statements:<ul>
+<li>“A p-value of .238 means there is a 23.8% probability that H₀ is true.”</li>
+<li>“A result above .05 proves that the groups are the same.”</li>
+<li>“A significant result tells us how large the difference is.”</li>
+</ul>
+</li>
+<li>Write one sentence reporting your result from Exercise 3 and one reporting your result from Exercise 6.</li>
+</ol>
+<details><summary>Solution to Exercise 8</summary><ol>
+<li><strong>t-test:</strong> Compare mean reaction times. <strong>Chi-square test:</strong> Compare the counts across categories to assess whether the proportion correct differs.</li>
+<li>“…assuming <strong>H₀ is true</strong>.”</li>
+<li>Corrections:<ul>
+<li>A p-value of .238 means that, <strong>if H₀ were true</strong>, results at least as extreme as ours would occur about 23.8% of the time. It does not give the probability that H₀ is true.</li>
+<li>A result above .05 means we do not reject H₀ at this level. It does not establish that the groups are the same.</li>
+<li>A significant result alone does not tell us the size of the difference. Look at the means or percentages as well.</li>
+</ul>
+</li>
+<li>Example reports:<ul>
+<li>“Correct responses were faster for words (653.7 ms) than for nonwords (722.8 ms), Welch’s t(481.60) = 5.62, p &lt; .001.”</li>
+<li>“Accuracy was higher for words (93%) than for nonwords (83%), χ²(1) = 14.20, p &lt; .001.”</li>
+</ul>
+</li>
+</ol>
+<p>Both reports refer to the <strong>fictional practice data</strong>.</p>
+</details></section><section id="to-finish"><h2>To finish</h2>
+<p>Run your script from top to bottom. Check that each test uses the intended dataset. Write down one question you would like to discuss.</p>
+</section><footer>R You Real? Lexical Decisions and Data Analysis · Hypothesis Testing · Fictional practice data</footer></main></body></html>
